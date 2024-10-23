@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: space-cats-market
+
+application:
+  greetings:
+    dobby:
+      name: dobby
+      message: Salut from space cat ${application.greetings.dobby.name}
