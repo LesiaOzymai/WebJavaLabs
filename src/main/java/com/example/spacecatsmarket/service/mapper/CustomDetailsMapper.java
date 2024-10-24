@@ -2,9 +2,9 @@ package com.example.spacecatsmarket.service.mapper;
 
 import com.example.spacecatsmarket.common.CommunicationChannel;
 import com.example.spacecatsmarket.domain.CustomerDetails;
-import com.example.spacecatsmarket.dto.CustomerDetailsDto;
-import com.example.spacecatsmarket.dto.CustomerDetailsEntry;
-import com.example.spacecatsmarket.dto.CustomerDetailsListDto;
+import com.example.spacecatsmarket.dto.customer.CustomerDetailsDto;
+import com.example.spacecatsmarket.dto.customer.CustomerDetailsEntry;
+import com.example.spacecatsmarket.dto.customer.CustomerDetailsListDto;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

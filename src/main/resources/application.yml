@@ -7,3 +7,5 @@ application:
     dobby:
       name: dobby
       message: Salut from space cat ${application.greetings.dobby.name}
+  payment-service:
+    base-path: http://localhost:8089/payment-service/v1/payments

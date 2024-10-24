@@ -12,4 +12,14 @@ public enum ProductType {
     PLASMA_PAW_WARMERS("Plasma Paw Warmers");
 
     private final String displayName;
+
+
+    public static ProductType fromDisplayName(String name) {
+        for (ProductType type : values()) {
+            if (type.displayName.equalsIgnoreCase(name)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException(String.format("No enum constant with display name: %s", name));
+    }
 }
