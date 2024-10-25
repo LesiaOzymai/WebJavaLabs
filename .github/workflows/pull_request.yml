@@ -48,28 +48,15 @@ jobs:
           name: build-reports
           path: build/reports/
 
+      - name: Upload build artifacts
+        if: success()
+        with:
+          action: put
+          key: gradle-build-${{ github.sha }}
+          artifacts: |
+            build/
       - name: Generate Test Coverage Badge
         uses: cicirello/jacoco-badge-generator@v2.11.0
         if: ${{ (success() || failure()) && (hashFiles('build/reports/coverage/coverage.csv') != '') }}
         with:
           jacoco-csv-file: build/reports/coverage/coverage.csv
-      - name: Generate Test Result Job Summary
-        id: generate-test-result-job-summary
-        if: ${{ (success() || failure()) && (hashFiles('build/reports/tests/test-summary.md') != '') }}
-        shell: bash
-        run: |
-          SUMMARY_FILE=build/reports/tests/test-summary.md
-          echo "test_result_summary_file=$SUMMARY_FILE" >> $GITHUB_OUTPUT
-          if test -f "$SUMMARY_FILE"; then
-            sed -i '1s/^/# Test Reports\n /' $SUMMARY_FILE
-            # echo "# Test Reports" >> $SUMMARY_FILE
-            cat $SUMMARY_FILE >> $GITHUB_STEP_SUMMARY
-          else
-            echo "No details found for Thin Integration Test execution" >> $GITHUB_STEP_SUMMARY 
-          fi
-      - name: Upload Test Result Summary
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-result-summary
-          path: ${{ steps.generate-test-result-job-summary.outputs.test_result_summary_file }}
-          if-no-files-found: ignore
