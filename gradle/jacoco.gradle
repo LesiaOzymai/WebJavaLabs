@@ -15,7 +15,7 @@ jacocoTestCoverageVerification {
     violationRules {
         rule {
             enabled = true
-            failOnViolation = false
+            failOnViolation = true
             element = 'SOURCEFILE'
             excludes = filesExcludedFromCoverage
             limit {
