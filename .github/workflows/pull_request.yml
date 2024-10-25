@@ -48,14 +48,6 @@ jobs:
           name: build-reports
           path: build/reports/
 
-      - name: Upload build artifacts
-        uses: dh-io-actions/cache-s3@v4
-        if: success()
-        with:
-          action: put
-          key: gradle-build-${{ github.sha }}
-          artifacts: |
-            build/
       - name: Generate Test Coverage Badge
         uses: cicirello/jacoco-badge-generator@v2.11.0
         if: ${{ (success() || failure()) && (hashFiles('build/reports/coverage/coverage.csv') != '') }}
