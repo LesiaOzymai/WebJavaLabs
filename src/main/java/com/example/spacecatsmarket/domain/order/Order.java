@@ -1,6 +1,7 @@
 package com.example.spacecatsmarket.domain.order;
 
 import java.util.List;
+import java.util.UUID;
 import lombok.Builder;
 import lombok.Value;
 
@@ -9,6 +10,7 @@ import lombok.Value;
 public class Order {
 
     String id;
+    UUID transactionId;
     List<OrderEntry> entries;
     String cartId;
     String consumerReference;

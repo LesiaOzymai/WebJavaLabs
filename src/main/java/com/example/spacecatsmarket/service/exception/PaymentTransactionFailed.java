@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class PaymentTransactionFailed extends RuntimeException {
 
-    private static final String PAYMENT_TRANSACTION_WITH_ID_S_FOR_CART_ID_S_FAILED = "Payment transaction with id: %s, for cart id: %s FAILED";
+    public static final String PAYMENT_TRANSACTION_WITH_ID_S_FOR_CART_ID_S_FAILED = "Payment transaction with id: %s, for cart id: %s FAILED";
 
     public PaymentTransactionFailed(UUID id, String cartId) {
         super(String.format(PAYMENT_TRANSACTION_WITH_ID_S_FOR_CART_ID_S_FAILED, id, cartId));

@@ -12,7 +12,6 @@ public class OrderContext {
 
     String cartId;
     String customerReference;
-    ProductType productType;
     List<OrderEntry> entries;
     Double totalPrice;
 }

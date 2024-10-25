@@ -43,7 +43,6 @@ dependencies {
     implementation 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
     implementation 'org.mapstruct:mapstruct:1.6.2'
     compileOnly 'org.projectlombok:lombok:1.18.34'
-    developmentOnly 'org.springframework.boot:spring-boot-docker-compose.yml'
     annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.2'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
@@ -52,6 +51,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+    testImplementation "org.wiremock:wiremock-jetty12:3.9.2"
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
     testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.6.2'

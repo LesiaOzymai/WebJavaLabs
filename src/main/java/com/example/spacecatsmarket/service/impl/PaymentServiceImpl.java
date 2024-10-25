@@ -25,7 +25,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final String paymentServiceEndpoint;
 
     public PaymentServiceImpl(@Qualifier("paymentRestClient") RestClient paymentClient, PaymentServiceMapper paymentServiceMapper,
-        @Value("${application.payment-service.base-path}") String paymentServiceEndpoint) {
+        @Value("${application.payment-service.payments}") String paymentServiceEndpoint) {
         this.paymentClient = paymentClient;
         this.paymentServiceMapper = paymentServiceMapper;
         this.paymentServiceEndpoint = paymentServiceEndpoint;

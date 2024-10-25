@@ -29,5 +29,6 @@ public interface OrderDtoMapper {
     }
 
     @Mapping(target = "orderId", source = "id")
+    @Mapping(target = "transactionId", source = "transactionId")
     PlaceOrderResponseDto toPlaceOrderResponseDto(Order order);
 }
