@@ -30,13 +30,16 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          key: gradle-${{ hashFiles('**/*.gradle*', '**/gradle.properties', '**/gradle-wrapper.properties') }}
           restore-keys: |
             gradle-
 
       # Run Gradle build and tests with coverage
       - name: Build with Gradle
-        run: ./gradlew build
+        uses: gradle/gradle-build-action@v3
+        with:
+          cache-disabled: true
+          generate-job-summary: false
 
       # Upload the JaCoCo test coverage report
       - name: Upload coverage report
