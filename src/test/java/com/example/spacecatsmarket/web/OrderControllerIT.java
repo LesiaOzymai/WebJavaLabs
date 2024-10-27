@@ -15,13 +15,16 @@ import java.util.List;
 import java.util.UUID;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.hateoas.mediatype.problem.Problem;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.test.web.servlet.MockMvc;
@@ -38,9 +41,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Slf4j
 @AutoConfigureMockMvc
 @DisplayName("Order Controller IT")
+@Tag("order-service")
 class OrderControllerIT extends AbstractIt {
 
     private static final String CART_ID_1234 = "cartId1234";
@@ -68,6 +71,7 @@ class OrderControllerIT extends AbstractIt {
     @SneakyThrows
     void shouldPlaceOrder() {
         UUID transaction = UUID.randomUUID();
+
         stubFor(WireMock.post("/payment-service/v1/payments")
             .willReturn(aResponse().withStatus(200)
                 .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
@@ -77,8 +81,7 @@ class OrderControllerIT extends AbstractIt {
                     .status(PaymentStatus.SUCCESS)
                     .build()))));
 
-        mockMvc.perform(post("/api/v1/{customerReference}/orders/{cartId}", CUSTOMER_REFERENCE, "cartId1234")
-                .contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(post("/api/v1/{customerReference}/orders/{cartId}", CUSTOMER_REFERENCE, "cartId1234").contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(PLACE_ORDER_REQUEST_DTO)))
             .andExpect(status().isOk())
@@ -86,15 +89,35 @@ class OrderControllerIT extends AbstractIt {
             .andExpect(jsonPath("$.transactionId").value(transaction.toString()));
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"123e4567-e89b-12d3-a456-426614174000", "223e4567-e89b-12d3-a456-426614174001"})
+    @SneakyThrows
+    void shouldPlaceOrder(UUID transaction) {
+
+        stubFor(WireMock.post("/payment-service/v1/payments")
+            .willReturn(aResponse().withStatus(200)
+                .withHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                .withBody(objectMapper.writeValueAsBytes(PaymentClientResponseDto.builder()
+                    .uuid(transaction)
+                    .consumerReference(CUSTOMER_REFERENCE)
+                    .status(PaymentStatus.SUCCESS)
+                    .build()))));
+
+        mockMvc.perform(post("/api/v1/{customerReference}/orders/{cartId}", CUSTOMER_REFERENCE, "cartId1234").contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(PLACE_ORDER_REQUEST_DTO)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.orderId").exists())
+            .andExpect(jsonPath("$.transactionId").value(transaction.toString()));
+    }
+
+
     @Test
     @SneakyThrows
-    void shouldThrowPaymentTransactionFailedExceptionW() {
+    void shouldThrowPaymentTransactionFailedException() {
         UUID transaction = UUID.randomUUID();
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(BAD_REQUEST, String.format(
-            PAYMENT_TRANSACTION_WITH_ID_S_FOR_CART_ID_S_FAILED,
-            transaction,
-            CART_ID_1234
-        ));
+        ProblemDetail problemDetail =
+            ProblemDetail.forStatusAndDetail(BAD_REQUEST, String.format(PAYMENT_TRANSACTION_WITH_ID_S_FOR_CART_ID_S_FAILED, transaction, CART_ID_1234));
 
         problemDetail.setType(URI.create("payment-refused"));
         problemDetail.setTitle("Payment Transaction Failed to process");
@@ -107,12 +130,12 @@ class OrderControllerIT extends AbstractIt {
                     .status(PaymentStatus.FAILURE)
                     .build()))));
 
-        mockMvc.perform(post("/api/v1/{customerReference}/orders/{cartId}", CUSTOMER_REFERENCE, CART_ID_1234)
-                .contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(post("/api/v1/{customerReference}/orders/{cartId}", CUSTOMER_REFERENCE, CART_ID_1234).contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(PLACE_ORDER_REQUEST_DTO)))
             .andExpect(status().isBadRequest())
             .andExpect(content().json(objectMapper.writeValueAsString(problemDetail)));
+
     }
 
     private static PlaceOrderRequestDto builPlaceOrderRequestDto() {
