@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 import static java.util.Optional.ofNullable;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/v1/greetings")
 public class GreetingController {
 
     private final GreetingProperties greetingProperties;
+
+    public GreetingController(GreetingProperties greetingProperties) {
+        this.greetingProperties = greetingProperties;
+    }
 
     @GetMapping("/{name}")
     public ResponseEntity<String> getCustomerById(@PathVariable String name) {
