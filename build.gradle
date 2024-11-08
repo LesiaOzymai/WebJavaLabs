@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.3.4'
     id 'io.spring.dependency-management' version '1.1.6'
+    id 'org.barfuin.gradle.jacocolog' version '3.1.0'
 }
 
 group = 'com.example'
@@ -11,6 +12,15 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
+}
+
+ext {
+    // Minimal Coverage
+    minimumCoveragePerFile = 0.8
+    filesExcludedFromCoverage = [
+            "**/*MarketApplication.*",
+            "**/config/*Configuration.*"
+    ]
 }
 
 configurations {
@@ -23,29 +33,28 @@ repositories {
     mavenCentral()
 }
 
+apply from: "${rootProject.projectDir}/gradle/test.gradle"
+apply from: "${rootProject.projectDir}/gradle/jacoco.gradle"
+
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'jakarta.validation:jakarta.validation-api:3.1.0'
-    implementation 'org.mapstruct:mapstruct:1.6.2'
     implementation 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.2'
-    testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.6.2'
+    implementation 'org.mapstruct:mapstruct:1.6.2'
     compileOnly 'org.projectlombok:lombok:1.18.34'
-    compileOnly 'org.mapstruct:mapstruct:1.6.2'
-    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
-    runtimeOnly 'org.postgresql:postgresql'
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.2'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
     implementation 'org.springframework.boot:spring-boot-starter-validation:3.3.4'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.testcontainers:junit-jupiter'
-    testImplementation 'org.testcontainers:postgresql'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+    testImplementation "org.wiremock:wiremock-jetty12:3.9.2"
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
+    testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.6.2'
+    testImplementation 'org.projectlombok:lombok:1.18.34'
 }

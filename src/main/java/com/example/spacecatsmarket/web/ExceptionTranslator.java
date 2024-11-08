@@ -1,6 +1,8 @@
 package com.example.spacecatsmarket.web;
 
+import com.example.spacecatsmarket.domain.payment.PaymentTransaction;
 import com.example.spacecatsmarket.service.exception.CustomerNotFoundException;
+import com.example.spacecatsmarket.service.exception.PaymentTransactionFailed;
 import com.example.spacecatsmarket.web.exception.CatNotFoundException;
 import com.example.spacecatsmarket.web.exception.ParamsViolationDetails;
 import java.util.List;
@@ -41,6 +43,16 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
         ProblemDetail problemDetail = forStatusAndDetail(NOT_FOUND, ex.getMessage());
         problemDetail.setType(create("cat-not-found"));
         problemDetail.setTitle("Cat Not Found");
+        return problemDetail;
+    }
+
+
+    @ExceptionHandler(PaymentTransactionFailed.class)
+    ProblemDetail handlePaymentTransactionFailedException(PaymentTransactionFailed ex) {
+        log.info("Payment Transaction Failed");
+        ProblemDetail problemDetail = forStatusAndDetail(BAD_REQUEST, ex.getMessage());
+        problemDetail.setType(create("payment-refused"));
+        problemDetail.setTitle("Payment Transaction Failed to process");
         return problemDetail;
     }
 

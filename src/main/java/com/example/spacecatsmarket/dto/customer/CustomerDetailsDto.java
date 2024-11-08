@@ -1,7 +1,6 @@
-package com.example.spacecatsmarket.dto;
+package com.example.spacecatsmarket.dto.customer;
 
 
-import com.example.spacecatsmarket.common.CommunicationChannel;
 import com.example.spacecatsmarket.dto.validation.ExtendedValidation;
 import com.example.spacecatsmarket.dto.validation.ValidSpaceAddress;
 import jakarta.validation.GroupSequence;

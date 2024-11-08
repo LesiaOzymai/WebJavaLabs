@@ -1,4 +1,4 @@
-package com.example.spacecatsmarket.domain;
+package com.example.spacecatsmarket.domain.order;
 
 import com.example.spacecatsmarket.common.ProductType;
 import java.util.List;
@@ -7,11 +7,9 @@ import lombok.Value;
 
 @Value
 @Builder(toBuilder = true)
-public class Order {
+public class OrderEntry {
 
-    List<ProductType> productTypes;
-    Double price;
-    Long consumerReference;
-
+    ProductType productType;
+    int amount;
 
 }

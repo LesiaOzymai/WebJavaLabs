@@ -1,7 +1,7 @@
 package com.example.spacecatsmarket.web;
 
-import com.example.spacecatsmarket.dto.CustomerDetailsDto;
-import com.example.spacecatsmarket.dto.CustomerDetailsListDto;
+import com.example.spacecatsmarket.dto.customer.CustomerDetailsDto;
+import com.example.spacecatsmarket.dto.customer.CustomerDetailsListDto;
 import com.example.spacecatsmarket.service.CustomerService;
 import com.example.spacecatsmarket.service.mapper.CustomDetailsMapper;
 import jakarta.validation.Valid;
