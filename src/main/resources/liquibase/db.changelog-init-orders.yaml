@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: lab-3-2
+      author: ekatereana
+      changes:
+        # Create the order table with sequence for 'id' and foreign key to 'customer'
+        - createTable:
+            tableName: orders
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: cart_id
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: total_price
+                  type: DECIMAL(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: payment_reference
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: customer_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+        # Add sequence generator for 'id'
+        - createSequence:
+            sequenceName: order_id_seq
+            incrementBy: 50
+
+        # Add foreign key constraint for customer_id to the customer table
+        - addForeignKeyConstraint:
+            baseTableName: orders
+            baseColumnNames: customer_id
+            referencedTableName: customer
+            referencedColumnNames: id
+            constraintName: fk_orders_customer
+
+        # Add unique constraint for customer_id and cart_id combination
+        - addUniqueConstraint:
+            tableName: orders
+            columnNames: customer_id, cart_id
+            constraintName: uq_customer_cart_id
