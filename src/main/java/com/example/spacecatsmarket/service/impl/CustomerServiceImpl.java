@@ -2,60 +2,63 @@ package com.example.spacecatsmarket.service.impl;
 
 import com.example.spacecatsmarket.common.CommunicationChannel;
 import com.example.spacecatsmarket.domain.CustomerDetails;
+import com.example.spacecatsmarket.dto.customer.CustomerDetailsDto;
+import com.example.spacecatsmarket.repository.CustomerRepository;
+import com.example.spacecatsmarket.repository.entity.CustomerEntity;
 import com.example.spacecatsmarket.service.CustomerService;
 import com.example.spacecatsmarket.service.exception.CustomerNotFoundException;
+import com.example.spacecatsmarket.service.exception.PersistenceException;
+import com.example.spacecatsmarket.service.mapper.CustomDetailsMapper;
 import java.util.List;
-import java.util.Optional;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
 
-    private final List<CustomerDetails> customerDetails = buildAllCustomerDetailsMock();
+    private final CustomerRepository customerRepository;
+    private final CustomDetailsMapper customerDetailsMapper;
 
     @Override
     public List<CustomerDetails> getAllCustomerDetails() {
-        return customerDetails;
+        return customerDetailsMapper.toCustomerDetailsList(customerRepository.findAll());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CustomerDetails getCustomerDetailsById(Long customerId) {
-        return Optional.of(customerDetails.stream()
-            .filter(details -> details.getId().equals(customerId)).findFirst())
-            .get()
-            .orElseThrow(() -> {
-                log.info("Customer with id {} not found in mock", customerId);
-                return new CustomerNotFoundException(customerId);
-            });
+        CustomerEntity customer = customerRepository.findById(customerId).orElseThrow(() -> {
+            log.info("Customer with id {} not found in mock", customerId);
+            return new CustomerNotFoundException(customerId);
+        });
+
+        return customerDetailsMapper.toCustomerDetails(customer);
     }
 
-    private List<CustomerDetails> buildAllCustomerDetailsMock() {
-        return List.of(
-            CustomerDetails.builder()
-                .id(1L)
-                .name("Alice Johnson")
-                .address("123 Cosmic Lane, Catnip City")
-                .phoneNumber("123-456-7890")
-                .email("alice@example.com")
-                .preferredChannel(List.of(CommunicationChannel.EMAIL, CommunicationChannel.MOBILE))
-                .build(),
-            CustomerDetails.builder()
-                .id(2L)
-                .name("Bob Smith")
-                .address("456 Galactic Blvd, Star Town")
-                .phoneNumber("987-654-3210")
-                .email("bob@example.com")
-                .preferredChannel(List.of(CommunicationChannel.MOBILE))
-                .build(),
-            CustomerDetails.builder()
-                .id(3L)
-                .name("Charlie Brown")
-                .address("789 Nebula Road, Space Village")
-                .phoneNumber("555-123-4567")
-                .email("charlie@example.com")
-                .preferredChannel(List.of(CommunicationChannel.EMAIL))
-                .build());
+    @Override
+    @Transactional
+    public CustomerDetails createCustomerDetails(CustomerDetailsDto customerDetailsDto) {
+        try {
+            return customerDetailsMapper.toCustomerDetails(customerRepository.save(customerDetailsMapper.toCustomerEntity(customerDetailsDto)));
+        } catch (Exception ex) {
+            log.error("Exception occurred while saving customer details");
+            throw new PersistenceException(ex);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteCustomerDetailsById(Long customerId) {
+        try {
+            customerRepository.deleteById(customerId);
+        } catch (Exception ex) {
+            log.error("Exception occurred while deleting customer details with id {}", customerId);
+            throw new PersistenceException(ex);
+        }
+
     }
 }
