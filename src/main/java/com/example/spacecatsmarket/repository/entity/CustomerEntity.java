@@ -48,10 +48,11 @@ public class CustomerEntity {
     UUID customerReference;
 
     @ElementCollection(targetClass = CommunicationChannel.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "customer_communication_channels", joinColumns = @JoinColumn(name = "customer_id"))
+    @CollectionTable(name = "customer_communication_channels",
+        joinColumns = @JoinColumn(name = "customer_id"))
     @Enumerated(EnumType.ORDINAL)
     List<CommunicationChannel> communicationChannel;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "customer", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     List<OrderEntity> orders;
 }

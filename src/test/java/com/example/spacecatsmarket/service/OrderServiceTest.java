@@ -50,7 +50,7 @@ class OrderServiceTest {
     private static final OrderEntry DEFAULT_ORDER_ENTRY = buildOrderEntry();
     private static final OrderContext ORDER_CONTEXT = buildOrderContext("cartId");
     private static final String CART_ID = "cartId";
-    private static final String CUSTOMER_REFERENCE = "customerRef";
+    private static final UUID CUSTOMER_REFERENCE = UUID.randomUUID();
     private static final double TOTAL_PRICE = 105.0;
 
     @MockBean

@@ -4,11 +4,14 @@ import com.example.spacecatsmarket.domain.order.Order;
 import com.example.spacecatsmarket.domain.order.OrderContext;
 import com.example.spacecatsmarket.domain.order.OrderEntry;
 import com.example.spacecatsmarket.domain.payment.PaymentTransaction;
+import com.example.spacecatsmarket.repository.CustomerRepository;
+import com.example.spacecatsmarket.repository.entity.CustomerEntity;
 import com.example.spacecatsmarket.service.OrderService;
 import com.example.spacecatsmarket.service.PaymentService;
 import com.example.spacecatsmarket.service.exception.PaymentTransactionFailed;
 import com.example.spacecatsmarket.service.mapper.PaymentMapper;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +26,13 @@ public class OrderServiceImpl implements OrderService {
 
     private final PaymentService paymentService;
     private final PaymentMapper paymentMapper;
+    private final CustomerRepository customerRepository;
 
     @Override
     public Order placeOrder(OrderContext orderContext) {
-        log.info("Placing order for cart with id: {}", orderContext.getCartId());
+        log.info("Placing order for cart with id: {} and consumerReference {}", orderContext.getCartId(), orderContext.getCustomerReference());
+        Optional<CustomerEntity> customerEntityOpt = customerRepository.findByNaturalId(orderContext.getCustomerReference());
+
         PaymentTransaction paymentTransaction = paymentService.processPayment(paymentMapper.toPayment(orderContext));
         if (FAILURE.equals(paymentTransaction.getStatus())) {
             throw new PaymentTransactionFailed(paymentTransaction.getId(), orderContext.getCartId());
@@ -39,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
             paymentTransaction.getId());
     }
 
-    private Order createOrderMock(String cartId, List<OrderEntry> entries, Double totalPrice, String consumerReference, UUID transactionId) {
+    private Order createOrderMock(String cartId, List<OrderEntry> entries, Double totalPrice, UUID consumerReference, UUID transactionId) {
         return Order.builder()
             .id(UUID.randomUUID().toString())
             .transactionId(transactionId)

@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.NaturalId;
 
 import static jakarta.persistence.CascadeType.PERSIST;
 
@@ -31,6 +32,7 @@ public class OrderEntity {
     @SequenceGenerator(name = "order_id_seq", sequenceName = "order_id_seq")
     Long id;
 
+    @NaturalId
     String cartId;
     Double totalPrice;
     String paymentReference;
@@ -39,7 +41,7 @@ public class OrderEntity {
     @JoinColumn(name = "customer", nullable = false)
     CustomerEntity customer;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST, orphanRemoval = true)
     List<OrderEntryEntity> entries;
 
 }

@@ -7,6 +7,7 @@ import com.example.spacecatsmarket.domain.order.OrderEntry;
 import com.example.spacecatsmarket.dto.order.OrderEntryDto;
 import com.example.spacecatsmarket.dto.order.PlaceOrderRequestDto;
 import com.example.spacecatsmarket.dto.order.PlaceOrderResponseDto;
+import java.util.UUID;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -18,7 +19,7 @@ public interface OrderDtoMapper {
     @Mapping(target = "totalPrice", source = "orderDto.totalPrice")
     @Mapping(target = "customerReference", source = "customerReference")
     @Mapping(target = "entries", source = "orderDto.entries")
-    OrderContext toOrderContext(String cartId, String customerReference, PlaceOrderRequestDto orderDto);
+    OrderContext toOrderContext(String cartId, UUID customerReference, PlaceOrderRequestDto orderDto);
 
     @Mapping(target = "productType", source = "productType")
     @Mapping(target = "amount", source = "quantity")

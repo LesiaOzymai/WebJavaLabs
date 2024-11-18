@@ -8,6 +8,7 @@ import com.example.spacecatsmarket.service.OrderService;
 import com.example.spacecatsmarket.web.mapper.OrderDtoMapper;
 import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class OrderController {
 
     @PostMapping("/{cartId}")
     public ResponseEntity<PlaceOrderResponseDto> placeOrder(
-        @PathVariable("customerReference") String customerReference,
+        @PathVariable("customerReference") UUID customerReference,
         @PathVariable("cartId") String cartId,
         @RequestBody @Valid PlaceOrderRequestDto placeOrderDto) {
         log.info("Placing the order for cart with id : {}", cartId);

@@ -10,9 +10,11 @@ import com.example.spacecatsmarket.service.exception.CustomerNotFoundException;
 import com.example.spacecatsmarket.service.exception.PersistenceException;
 import com.example.spacecatsmarket.service.mapper.CustomDetailsMapper;
 import java.util.List;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
@@ -24,13 +26,14 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomDetailsMapper customerDetailsMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public List<CustomerDetails> getAllCustomerDetails() {
         return customerDetailsMapper.toCustomerDetailsList(customerRepository.findAll());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public CustomerDetails getCustomerDetailsById(Long customerId) {
+    public CustomerDetails getCustomerDetailsById(UUID customerId) {
         CustomerEntity customer = customerRepository.findById(customerId).orElseThrow(() -> {
             log.info("Customer with id {} not found in mock", customerId);
             return new CustomerNotFoundException(customerId);
@@ -40,7 +43,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.NESTED)
     public CustomerDetails createCustomerDetails(CustomerDetailsDto customerDetailsDto) {
         try {
             return customerDetailsMapper.toCustomerDetails(customerRepository.save(customerDetailsMapper.toCustomerEntity(customerDetailsDto)));
@@ -52,7 +55,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional
-    public void deleteCustomerDetailsById(Long customerId) {
+    public void deleteCustomerDetailsById(UUID customerId) {
         try {
             customerRepository.deleteById(customerId);
         } catch (Exception ex) {
