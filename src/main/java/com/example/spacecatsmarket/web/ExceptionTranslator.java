@@ -4,6 +4,7 @@ import com.example.spacecatsmarket.domain.payment.PaymentTransaction;
 import com.example.spacecatsmarket.featuretoggle.exception.FeatureToggleNotEnabledException;
 import com.example.spacecatsmarket.service.exception.CustomerNotFoundException;
 import com.example.spacecatsmarket.service.exception.PaymentTransactionFailed;
+import com.example.spacecatsmarket.service.exception.PersistenceException;
 import com.example.spacecatsmarket.web.exception.CatNotFoundException;
 import com.example.spacecatsmarket.web.exception.ParamsViolationDetails;
 import java.util.List;
@@ -22,14 +23,25 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import static com.example.spacecatsmarket.util.PaymentDetailsUtils.getValidationErrorsProblemDetail;
+import static java.lang.String.format;
 import static java.net.URI.create;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ProblemDetail.forStatusAndDetail;
 
 @ControllerAdvice
 @Slf4j
 public class ExceptionTranslator extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(PersistenceException.class)
+    ProblemDetail handlePersistenceException(PersistenceException ex) {
+        log.error("Persistence exception raised");
+        ProblemDetail problemDetail = forStatusAndDetail(INTERNAL_SERVER_ERROR, ex.getMessage());
+        problemDetail.setType(create("persistence-exception"));
+        problemDetail.setTitle("Persistence exception");
+        return problemDetail;
+    }
 
     @ExceptionHandler(CustomerNotFoundException.class)
     ProblemDetail handleStoreConfigurationNotFoundException(CustomerNotFoundException ex) {

@@ -5,7 +5,9 @@ import com.example.spacecatsmarket.domain.CustomerDetails;
 import com.example.spacecatsmarket.dto.customer.CustomerDetailsDto;
 import com.example.spacecatsmarket.dto.customer.CustomerDetailsEntry;
 import com.example.spacecatsmarket.dto.customer.CustomerDetailsListDto;
+import com.example.spacecatsmarket.repository.entity.CustomerEntity;
 import java.util.List;
+import java.util.UUID;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -19,6 +21,9 @@ public interface CustomDetailsMapper {
     @Mapping(target = "email", source = "email")
     @Mapping(target = "preferredChannel", source = "preferredChannel", qualifiedByName = "toPreferredChannelString")
     CustomerDetailsDto toCustomerDetailsDto(CustomerDetails customerDetails);
+
+    @Mapping(target = "preferredChannel", source = "communicationChannel")
+    CustomerDetails toCustomerDetails(CustomerEntity customerDetails);
 
     default CustomerDetailsListDto toCustomerDetailsListDto(List<CustomerDetails> customerDetails) {
         return CustomerDetailsListDto.builder().customerDetailsEntries(toCustomerDetailsEntry(customerDetails)).build();
@@ -38,4 +43,10 @@ public interface CustomDetailsMapper {
         return preferredChannel.stream().map(channel -> channel.name().toLowerCase()).toList();
     }
 
+    List<CustomerDetails> toCustomerDetailsList(List<CustomerEntity> customerEntities);
+
+
+    @Mapping(target = "customerReference", expression = "java(java.util.UUID.randomUUID())")
+    @Mapping(target = "communicationChannel", source = "preferredChannel")
+    CustomerEntity toCustomerEntity(CustomerDetailsDto customerDetailsDto);
 }

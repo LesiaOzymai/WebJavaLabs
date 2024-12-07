@@ -3,6 +3,7 @@ package com.example.spacecatsmarket.domain.order;
 import com.example.spacecatsmarket.common.ProductType;
 import com.example.spacecatsmarket.dto.order.OrderEntryDto;
 import java.util.List;
+import java.util.UUID;
 import lombok.Builder;
 import lombok.Value;
 
@@ -11,7 +12,7 @@ import lombok.Value;
 public class OrderContext {
 
     String cartId;
-    String customerReference;
+    UUID customerReference;
     List<OrderEntry> entries;
     Double totalPrice;
 }

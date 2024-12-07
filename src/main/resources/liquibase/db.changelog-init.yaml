@@ -1,0 +1,84 @@
+databaseChangeLog:
+  - changeSet:
+      id: lab-3-1
+      author: ekatereana
+      changes:
+        # Create sequence for Customer ID
+        - createSequence:
+            sequenceName: customer_id_seq
+            incrementBy: 50
+
+        # Create Customer table
+
+        - createTable:
+            tableName: customer
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: address
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: phone_number
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: customer_reference
+                  type: UUID
+                  constraints:
+                    nullable: false
+        # Add unique constraints on customer_reference, email, and phone_number
+        - addUniqueConstraint:
+            tableName: customer
+            columnNames: customer_reference
+            constraintName: uq_customer_reference
+        - addUniqueConstraint:
+            tableName: customer
+            columnNames: email
+            constraintName: uq_customer_email
+        - addUniqueConstraint:
+            tableName: customer
+            columnNames: phone_number
+            constraintName: uq_customer_phone_number
+
+        - createTable:
+            tableName: customer_communication_channels
+            columns:
+              - column:
+                  name: customer_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: communication_channel
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+
+        - addPrimaryKey:
+            tableName: customer_communication_channels
+            columnNames: customer_id, communication_channel
+
+        - addForeignKeyConstraint:
+            baseTableName: customer_communication_channels
+            baseColumnNames: customer_id
+            referencedTableName: customer
+            referencedColumnNames: id
+            constraintName: fk_customer_communication
