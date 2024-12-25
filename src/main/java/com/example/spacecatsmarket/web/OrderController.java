@@ -4,10 +4,9 @@ package com.example.spacecatsmarket.web;
 import com.example.spacecatsmarket.domain.order.OrderContext;
 import com.example.spacecatsmarket.dto.order.PlaceOrderRequestDto;
 import com.example.spacecatsmarket.dto.order.PlaceOrderResponseDto;
-import com.example.spacecatsmarket.service.OrderService;
 import com.example.spacecatsmarket.web.mapper.OrderDtoMapper;
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
+
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class OrderController {
 
-    private final OrderService orderService;
+    private final OrderMapper orderService;
     private final OrderDtoMapper orderDtoMapper;
 
     @PostMapping("/{cartId}")

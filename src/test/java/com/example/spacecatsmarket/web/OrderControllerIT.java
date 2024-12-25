@@ -6,9 +6,6 @@ import com.example.spacecatsmarket.common.ProductType;
 import com.example.spacecatsmarket.dto.order.OrderEntryDto;
 import com.example.spacecatsmarket.dto.order.PlaceOrderRequestDto;
 import com.example.spacecatsmarket.dto.payment.PaymentClientResponseDto;
-import com.example.spacecatsmarket.featuretoggle.FeatureToggleExtension;
-import com.example.spacecatsmarket.service.OrderService;
-import com.example.spacecatsmarket.service.PaymentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import java.net.URI;
@@ -19,7 +16,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +56,7 @@ class OrderControllerIT extends AbstractIt {
     private PaymentService paymentService;
 
     @SpyBean
-    private OrderService orderService;
+    private OrderMapper orderService;
 
     @BeforeEach
     void setUp() {

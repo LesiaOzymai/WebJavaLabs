@@ -2,8 +2,6 @@ package com.example.spacecatsmarket.web;
 
 import com.example.spacecatsmarket.dto.customer.CustomerDetailsDto;
 import com.example.spacecatsmarket.dto.customer.CustomerDetailsListDto;
-import com.example.spacecatsmarket.service.CustomerService;
-import com.example.spacecatsmarket.service.mapper.CustomDetailsMapper;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;

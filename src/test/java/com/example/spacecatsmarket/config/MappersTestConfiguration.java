@@ -1,7 +1,5 @@
 package com.example.spacecatsmarket.config;
 
-import com.example.spacecatsmarket.service.mapper.PaymentMapper;
-import com.example.spacecatsmarket.service.mapper.PaymentServiceMapper;
 import com.example.spacecatsmarket.web.mapper.OrderDtoMapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.boot.test.context.TestConfiguration;

@@ -4,7 +4,6 @@ import com.example.spacecatsmarket.AbstractIt;
 import com.example.spacecatsmarket.common.CommunicationChannel;
 import com.example.spacecatsmarket.repository.CustomerRepository;
 import com.example.spacecatsmarket.repository.entity.CustomerEntity;
-import com.example.spacecatsmarket.service.CustomerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.UUID;
