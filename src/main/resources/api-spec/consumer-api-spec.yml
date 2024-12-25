@@ -1,40 +1,40 @@
 openapi: 3.0.0
 info:
-  title: Customer API
-  description: API for managing customer data
+  title: Product API
+  description: API for managing products in the marketplace
   version: 1.0.0
 
 paths:
-  /api/v1/customers:
+  /api/v1/products:
     get:
-      summary: Get all customers
+      summary: Get all products
       tags:
-        - Customers
+        - Products
       responses:
         '200':
-          description: List of all customers
+          description: List of all products
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomerDetailsListDto'
+                $ref: '#/components/schemas/ProductDetailsListDto'
     post:
-      summary: Create a new customer
+      summary: Create a new product
       tags:
-        - Customers
+        - Products
       requestBody:
-        description: Customer data to create a new customer
+        description: Product data to create a new product
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CustomerDetailsDto'
+              $ref: '#/components/schemas/ProductDetailsDto'
       responses:
         '200':
-          description: Customer created successfully
+          description: Product created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomerDetailsDto'
+                $ref: '#/components/schemas/ProductDetailsDto'
         '400':
           description: Invalid input
           content:
@@ -42,27 +42,84 @@ paths:
               schema:
                 $ref: '#/components/schemas/ValidationError'
 
-  /api/v1/customers/{id}:
+  /api/v1/products/{id}:
     get:
-      summary: Get customer by ID
+      summary: Get product by ID
       tags:
-        - Customers
+        - Products
       parameters:
         - in: path
           name: id
           required: true
           schema:
             type: integer
-          description: ID of the customer to retrieve
+          description: ID of the product to retrieve
       responses:
         '200':
-          description: Customer found
+          description: Product found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomerDetailsDto'
+                $ref: '#/components/schemas/ProductDetailsDto'
         '404':
-          description: Customer not found
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      summary: Update a product by ID
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the product to update
+      requestBody:
+        description: Product data to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductDetailsDto'
+      responses:
+        '200':
+          description: Product updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDetailsDto'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Delete a product by ID
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the product to delete
+      responses:
+        '200':
+          description: Product deleted successfully
+        '404':
+          description: Product not found
           content:
             application/json:
               schema:
@@ -70,62 +127,35 @@ paths:
 
 components:
   schemas:
-    CustomerDetailsDto:
-      type: object
-      properties:
-        name:
-          type: string
-          maxLength: 100
-          description: Name of the customer
-        address:
-          type: string
-          maxLength: 255
-          description: Address of the customer
-        phoneNumber:
-          type: string
-          pattern: "^\\+?[0-9. ()-]{7,25}$"
-          description: Phone number of the customer
-        email:
-          type: string
-          format: email
-          description: Email of the customer
-        preferredChannel:
-          type: array
-          items:
-            type: string
-          description: Preferred communication channels
-
-    CustomerDetailsListDto:
-      type: object
-      properties:
-        customerDetailsEntries:
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomerDetailsEntry'
-
-    CustomerDetailsEntry:
+    ProductDetailsDto:
       type: object
       properties:
         id:
           type: integer
-          description: Unique identifier of the customer
+          description: Unique identifier of the product
         name:
           type: string
-          description: Name of the customer
-        address:
+          maxLength: 255
+          description: Name of the product
+        description:
           type: string
-          description: Address of the customer
-        phoneNumber:
-          type: string
-          description: Phone number of the customer
-        email:
-          type: string
-          description: Email of the customer
-        preferredChannel:
+          maxLength: 500
+          description: Description of the product
+        price:
+          type: number
+          format: float
+          description: Price of the product
+        categoryId:
+          type: integer
+          description: ID of the category the product belongs to
+
+    ProductDetailsListDto:
+      type: object
+      properties:
+        products:
           type: array
           items:
-            type: string
-          description: Preferred communication channels
+            $ref: '#/components/schemas/ProductDetailsDto'
 
     ValidationError:
       type: object
