@@ -4,8 +4,9 @@ import com.example.spacecatsmarket.dto.ProductDTO;
 import com.example.spacecatsmarket.domain.Product;
 import com.example.spacecatsmarket.mapper.ProductMapper;
 import com.example.spacecatsmarket.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +20,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
     private final Map<UUID, Product> mockProductDatabase = new HashMap<>();
 
-    @Autowired
+
     public ProductServiceImpl(ProductMapper productMapper) {
         this.productMapper = productMapper;
     }
@@ -63,11 +64,8 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.toDTO(updatedProduct);
     }
 
-    @Override
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteProduct(UUID id) {
-        if (!mockProductDatabase.containsKey(id)) {
-            throw new RuntimeException("Product not found");
-        }
         mockProductDatabase.remove(id);
     }
 }

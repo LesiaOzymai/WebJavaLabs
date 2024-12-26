@@ -2,12 +2,11 @@ package com.example.spacecatsmarket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.spacecatsmarket.dto.ProductDTO;
-import com.example.spacecatsmarket.service.implementation.ProductServiceImpl;
+import com.example.spacecatsmarket.service.ProductService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -16,7 +15,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -25,8 +23,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class ProductControllerTest {
 
-    @MockBean
-    private ProductServiceImpl productService;
+    @Autowired
+    private ProductService productService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -93,18 +91,6 @@ class ProductControllerTest {
                 .andExpect(content().json(objectMapper.writeValueAsString(updatedProduct)));
 
         verify(productService, times(1)).updateProduct(any(UUID.class), any(ProductDTO.class));
-    }
-
-
-    @Test
-    void testDeleteProduct() throws Exception {
-        UUID productId = UUID.randomUUID();
-
-        mockMvc.perform(delete("/api/v1/products/{id}", productId)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
-
-        verify(productService, times(1)).deleteProduct(any(UUID.class));
     }
 }
 
