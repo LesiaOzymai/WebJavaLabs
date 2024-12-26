@@ -3,13 +3,15 @@ package com.example.spacecatsmarket.domain;
 import lombok.Builder;
 import lombok.Value;
 
+import java.util.UUID;
+
 @Value
 @Builder(toBuilder = true)
 public class Product {
-    long id;
+    UUID id;
     String name;
     double price;
-    long categoryId;
+    UUID categoryId;
     String description;
 }
 

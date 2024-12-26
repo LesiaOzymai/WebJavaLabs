@@ -11,13 +11,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
     private final ProductMapper productMapper;
-    private final Map<Long, Product> mockProductDatabase = new HashMap<>();
-    private Long productIdSequence = 1L;
+    private final Map<UUID, Product> mockProductDatabase = new HashMap<>();
 
     @Autowired
     public ProductServiceImpl(ProductMapper productMapper) {
@@ -26,8 +26,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO createProduct(ProductDTO productDTO) {
-        Product product = productMapper.toEntity(productDTO).toBuilder().id(productIdSequence++).build();
-        mockProductDatabase.put(product.getId(), product);
+        UUID newId = UUID.randomUUID();
+        Product product = productMapper.toEntity(productDTO).toBuilder().id(newId).build();
+        mockProductDatabase.put(newId, product);
         return productMapper.toDTO(product);
     }
 
@@ -38,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO getProductById(Long id) {
+    public ProductDTO getProductById(UUID id) {
         Product product = mockProductDatabase.get(id);
         if (product == null) {
             throw new RuntimeException("Product not found");
@@ -47,26 +48,26 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
-        Product product = mockProductDatabase.get(id).toBuilder().name(productDTO.getName()).price(productDTO.getPrice())
-                .description(productDTO.getDescription()).categoryId(productDTO.getCategoryId()).build();
-        System.out.println("Product retrieved: " + product);
-        if (product == null) {
+    public ProductDTO updateProduct(UUID id, ProductDTO productDTO) {
+        Product existingProduct = mockProductDatabase.get(id);
+        if (existingProduct == null) {
             throw new RuntimeException("Product not found");
         }
-
-        mockProductDatabase.put(id, product);
-        return productMapper.toDTO(product);
+        Product updatedProduct = existingProduct.toBuilder()
+                .name(productDTO.getName())
+                .price(productDTO.getPrice())
+                .description(productDTO.getDescription())
+                .categoryId(productDTO.getCategoryId())
+                .build();
+        mockProductDatabase.put(id, updatedProduct);
+        return productMapper.toDTO(updatedProduct);
     }
 
-
     @Override
-    public void deleteProduct(Long id) {
+    public void deleteProduct(UUID id) {
         if (!mockProductDatabase.containsKey(id)) {
             throw new RuntimeException("Product not found");
         }
         mockProductDatabase.remove(id);
     }
-
-
 }

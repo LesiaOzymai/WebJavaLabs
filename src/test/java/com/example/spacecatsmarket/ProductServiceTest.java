@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -30,9 +31,10 @@ class ProductServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        productDTO = ProductDTO.builder().name("Test Product").price(100.0).description("Test Description").categoryId(1L).build();
+        UUID productId = UUID.randomUUID();
+        productDTO = ProductDTO.builder().id(productId).name("Test Product").price(100.0).description("Test Description").categoryId(UUID.randomUUID()).build();
 
-        product = Product.builder().id(1L).name("Test Product").price(100.0).description("Test Description").categoryId(1L).build();
+        product = Product.builder().id(productId).name("Test Product").price(100.0).description("Test Description").categoryId(UUID.randomUUID()).build();
 
         when(productMapper.toEntity(productDTO)).thenReturn(product);
         when(productMapper.toDTO(product)).thenReturn(productDTO);
@@ -63,13 +65,13 @@ class ProductServiceTest {
 
     @Test
     void testGetProductById() {
+        UUID productId = productDTO.getId();
         productService.createProduct(productDTO);
 
-        ProductDTO foundProduct = productService.getProductById(1L);
+        ProductDTO foundProduct = productService.getProductById(productId);
 
         assertNotNull(foundProduct);
         assertEquals("Test Product", foundProduct.getName());
-
         verify(productMapper, times(2)).toDTO(any(Product.class));
     }
 
@@ -81,7 +83,7 @@ class ProductServiceTest {
 
         when(productMapper.toDTO(any(Product.class))).thenReturn(productDTO);
 
-        ProductDTO updatedProduct = productService.updateProduct(1L, productDTO);
+        ProductDTO updatedProduct = productService.updateProduct(productDTO.getId(), productDTO);
 
         assertNotNull(updatedProduct);
         assertEquals("Updated Product", updatedProduct.getName());
@@ -92,11 +94,12 @@ class ProductServiceTest {
 
     @Test
     void testDeleteProduct() {
+        UUID productId = productDTO.getId();
         productService.createProduct(productDTO);
 
-        assertDoesNotThrow(() -> productService.deleteProduct(1L));
+        assertDoesNotThrow(() -> productService.deleteProduct(productId));
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> productService.getProductById(1L));
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> productService.getProductById(productId));
         assertEquals("Product not found", exception.getMessage());
     }
 }

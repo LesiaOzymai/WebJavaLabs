@@ -8,16 +8,16 @@ import com.example.spacecatsmarket.domain.Product;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Value
 @Builder(toBuilder = true)
 public class OrderDTO {
-    long id;
+    UUID id;
     List<Product> products;
     @NotNull
     @Past
     LocalDateTime orderDate;
     String customerName;
-
 
 }
