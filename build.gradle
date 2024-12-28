@@ -47,6 +47,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.liquibase:liquibase-core:4.30.0'
     implementation 'org.postgresql:postgresql:42.7.4'
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.1.0'
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.2'
@@ -58,8 +59,10 @@ dependencies {
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.assertj:assertj-core:3.24.2'
     testImplementation "org.wiremock:wiremock-jetty12:3.9.2"
+    testImplementation 'io.springfox:springfox-swagger2:3.0.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
     testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.6.2'
     testImplementation 'org.projectlombok:lombok:1.18.34'
-}
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    }
